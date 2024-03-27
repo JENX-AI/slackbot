@@ -1,15 +1,14 @@
 # -*- coding: utf-8 -*-
 import os
 from dotenv import load_dotenv
-import slack_bolt
 from slack_bolt import App
 from slack_bolt.adapter.socket_mode import SocketModeHandler
-import together
 from slack import WebClient
+import together
 
-##############################
+#=====================================
 # Credentials
-##############################
+#=====================================
 
 load_dotenv("../.env")
 SLACK_BOT_TOKEN = os.environ["SLACK_BOT_TOKEN"]
@@ -18,6 +17,7 @@ together.api_key = os.environ["TOGETHER_API_KEY"]
 
 app = App(token=SLACK_BOT_TOKEN)
 client = WebClient(SLACK_BOT_TOKEN)
+
 #=====================================
 # Direct message handler for Slack
 #=====================================
@@ -60,6 +60,7 @@ def message_handler(message, say, logger):
 
     say(complete_output)  # Send the generated response back to Slack
 
+
 @app.event(("app_mention"))
 def handle_app_mention_events(body, say, logger):
     user_message = body['event']['text']  # Extract the user's message from the Slack event
@@ -98,6 +99,7 @@ def handle_app_mention_events(body, say, logger):
         complete_output = f"Error: {e}. \n\nPlease make sure your API key below is correct and valid."
 
     say(complete_output)  # Send the generated response back to Slack
+
 
 #==============================
 
