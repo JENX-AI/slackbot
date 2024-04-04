@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import re
 
-    
+
 def re_slack_id(raw_text: str) -> str:
     """
     Removes Slack user ID from start of message (if applicable)
