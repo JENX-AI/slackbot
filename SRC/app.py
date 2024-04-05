@@ -75,8 +75,13 @@ def handle_app_mention_events(body: dict, say: slack_bolt.Say, logger: logging.L
     
     # Store user_message and get bot response
     bot_message = add_chain_link(channel_id, body, loc="mentions")
+
     # Send generated response back to Slack
-    say(bot_message)
+    # say(bot_message)
+
+    # Send generated response back in a thread
+    thread_timestamp = body["event"]["ts"]
+    say(bot_message, thread_ts = thread_timestamp)
 
 
 # ====================================
