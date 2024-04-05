@@ -67,7 +67,11 @@ def handle_app_mention_events(body: dict, say: slack_bolt.Say, logger: logging.L
         logging object
     """
     # ID for channel message received from
-    channel_id = body["event"]["channel"]
+    # Set thread timestamp as channel ID 
+    try:
+        channel_id = body["event"]["thread_ts"]
+    except KeyError:
+        channel_id = body["event"]["ts"]
     
     # If no chain exists for this channel, create new one
     if not channel_id in THREADS_DICT:
@@ -75,9 +79,6 @@ def handle_app_mention_events(body: dict, say: slack_bolt.Say, logger: logging.L
     
     # Store user_message and get bot response
     bot_message = add_chain_link(channel_id, body, loc="mentions")
-
-    # Send generated response back to Slack
-    # say(bot_message)
 
     # Send generated response back in a thread
     thread_timestamp = body["event"]["ts"]
