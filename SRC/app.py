@@ -5,22 +5,20 @@ import slack_bolt
 from slack_bolt import App
 from slack_bolt.adapter.socket_mode import SocketModeHandler
 from slack import WebClient
-import together
 
-# Constants
-from config import SYSTEM_PROMPT, MODEL, MAX_TOKENS, TEMPERATURE
-from config import TOP_K, TOP_P, REPETITION_PENALTY
+# LLM functions and objects
+from utils.llm_model import build_chain, add_chain_link, THREADS_DICT
 # Credentials
 load_dotenv("../.env")
 SLACK_BOT_TOKEN = os.environ["SLACK_BOT_TOKEN"]
 SLACK_APP_TOKEN = os.environ["SLACK_APP_TOKEN"]
-together.api_key = os.environ["TOGETHER_API_KEY"]
 
 app = App(token=SLACK_BOT_TOKEN)
 client = WebClient(SLACK_BOT_TOKEN)
+logger = logging.getLogger(__name__)
 
 # ====================================
-# Direct message handler for Slack
+# Slack event listeners
 # ====================================
 
 @app.message(".*")
@@ -39,27 +37,17 @@ def message_handler(message: dict, say: slack_bolt.Say, logger: logging.Logger) 
     logger : logging.Logger
         logging object
     """
-    # Extract user message from Slack event
-    user_message = message["text"]  
-    # Construct final prompt for LLM based on SYSTEM_PROMPT and specific_prompt
-    prompt = f"<s>[INST] <<SYS>>{SYSTEM_PROMPT}<</SYS>>\\n\\n"
-    # prompt += f"[INST]{specific_prompt}[/INST]"
-    prompt += f"[INST] Answer the user prompt: {user_message}[/INST]"
-
-    try:
-        output = together.Complete.create(
-            prompt,
-            model=MODEL, max_tokens=MAX_TOKENS, temperature=TEMPERATURE, 
-            top_k=TOP_K, top_p=TOP_P, repetition_penalty=REPETITION_PENALTY,
-            stop=["</s>"]
-        )
-        complete_output = output["output"]["choices"][0]["text"]
+    # ID for channel message received from
+    channel_id = message["channel"]
     
-    except Exception as e:
-        complete_output = f"Error: {e}. \n\nPlease make sure your API key below is correct and valid."
+    # If no chain exists for this channel, create new one
+    if not channel_id in THREADS_DICT:
+        build_chain(channel_id)
     
-    # Send the generated response back to Slack
-    say(complete_output)  
+    # Store user_message and get bot response
+    bot_message = add_chain_link(channel_id, message, loc="apps")
+    # Send generated response back to Slack
+    say(bot_message)
 
 
 @app.event(("app_mention"))
@@ -78,27 +66,17 @@ def handle_app_mention_events(body: dict, say: slack_bolt.Say, logger: logging.L
     logger : logging.Logger
         logging object
     """
-    # Extract user message from Slack event
-    user_message = body["event"]["text"]
-    # Construct final prompt for LLM based on SYSTEM_PROMPT and specific_prompt
-    prompt = f"<s>[INST] <<SYS>>{SYSTEM_PROMPT}<</SYS>>\\n\\n"
-    # prompt += f"[INST]{specific_prompt}[/INST]"
-    prompt += f"[INST] Answer the user prompt: {user_message}[/INST]"
-
-    try:
-        output = together.Complete.create(
-            prompt,
-            model=MODEL, max_tokens=MAX_TOKENS, temperature=TEMPERATURE, 
-            top_k=TOP_K, top_p=TOP_P, repetition_penalty=REPETITION_PENALTY,
-            stop=["</s>"]
-        )
-        complete_output = output["output"]["choices"][0]["text"]
+    # ID for channel message received from
+    channel_id = body["event"]["channel"]
     
-    except Exception as e:
-        complete_output = f"Error: {e}. \n\nPlease make sure your API key below is correct and valid."
+    # If no chain exists for this channel, create new one
+    if not channel_id in THREADS_DICT:
+        build_chain(channel_id)
     
-    # Send the generated response back to Slack
-    say(complete_output)  
+    # Store user_message and get bot response
+    bot_message = add_chain_link(channel_id, body, loc="mentions")
+    # Send generated response back to Slack
+    say(bot_message)
 
 
 # ====================================
