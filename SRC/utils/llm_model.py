@@ -68,14 +68,9 @@ def add_chain_link(thread_id: str, msg: dict, loc: str) -> str:
     """
     # Extract user message from Slack event
     if loc == "apps":
-        # msg_author = msg["user"]
         msg_txt = re_whitespace(msg["text"])
-        # msg_content = f"{msg_author}: {msg_txt}"
-    
     elif loc == "mentions":
-        # msg_author = msg["event"]["user"]
         msg_txt = re_whitespace(msg["event"]["text"])
-        # msg_content = f"{msg_author}: {msg_txt}"
     
     try:
         bot_msg = THREADS_DICT[thread_id]["chain"].predict(input=msg_txt)
