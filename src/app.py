@@ -38,7 +38,11 @@ def message_handler(message: dict, say: slack_bolt.Say, logger: logging.Logger) 
         logging object
     """
     # ID for channel message received from
-    channel_id = message["channel"]
+    # Set thread timestamp as channel ID 
+    try:
+        channel_id = message["thread_ts"]
+    except KeyError:
+        channel_id = message["ts"]
     
     # If no chain exists for this channel, create new one
     if not channel_id in THREADS_DICT:
@@ -46,8 +50,10 @@ def message_handler(message: dict, say: slack_bolt.Say, logger: logging.Logger) 
     
     # Store user_message and get bot response
     bot_message = add_chain_link(channel_id, message, loc="apps")
-    # Send generated response back to Slack
-    say(bot_message)
+    
+    # Send generated response back in a thread
+    thread_timestamp = message["ts"]
+    say(bot_message, thread_ts = thread_timestamp)
 
 
 @app.event(("app_mention"))
