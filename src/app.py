@@ -9,7 +9,7 @@ from slack import WebClient
 # LLM functions and objects
 from utils.llm_model import build_chain, add_chain_link, THREADS_DICT
 # Credentials
-load_dotenv("../.env")
+load_dotenv()
 SLACK_BOT_TOKEN = os.environ["SLACK_BOT_TOKEN"]
 SLACK_APP_TOKEN = os.environ["SLACK_APP_TOKEN"]
 
