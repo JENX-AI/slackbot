@@ -34,7 +34,7 @@ else:
 
 # MODEL = "meta-llama/Llama-2-13b-chat-hf"
 # MODEL = "mistralai/Mistral-7B-Instruct-v0.1"
-# MODEL = "togethercomputer/alpaca-7b"
+MODEL = "togethercomputer/alpaca-7b"
 # MODEL = "zero-one-ai/Yi-34B-Chat"
 # IMAGE_MODEL = "stabilityai/stable-diffusion-2-1"
 
