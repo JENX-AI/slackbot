@@ -12,7 +12,7 @@ from utils.regex import re_whitespace, re_user_prefixes, re_slack_id
 from utils.config import SYSTEM_PROMPT, MODEL, MAX_TOKENS, TEMPERATURE
 from utils.config import TOP_K, TOP_P, REPETITION_PENALTY
 # Credentials
-load_dotenv("../.env")
+load_dotenv()
 TOGETHER_API_KEY = os.environ["TOGETHER_API_KEY"]
 
 logger = logging.getLogger(__name__)
