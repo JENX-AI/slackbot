@@ -7,12 +7,12 @@ from langchain.prompts.prompt import PromptTemplate
 from langchain_together import Together
 
 # Regex functions
-from utils.regex import re_whitespace, re_user_prefixes, re_slack_id
+from utils.regex import regex_handler
 # Constants
 from utils.config import SYSTEM_PROMPT, MODEL, MAX_TOKENS, TEMPERATURE
 from utils.config import TOP_K, TOP_P, REPETITION_PENALTY
 # Credentials
-load_dotenv("../.env")
+load_dotenv()
 TOGETHER_API_KEY = os.environ["TOGETHER_API_KEY"]
 
 logger = logging.getLogger(__name__)
@@ -68,16 +68,17 @@ def add_chain_link(thread_id: str, msg: dict, loc: str) -> str:
     """
     # Extract user message from Slack event
     if loc == "apps":
-        msg_txt = re_whitespace(msg["text"])
+        msg_txt = msg["text"]
     elif loc == "mentions":
-        msg_txt = re_whitespace(msg["event"]["text"])
+        msg_txt = msg["event"]["text"]
     
     try:
-        bot_msg = THREADS_DICT[thread_id]["chain"].predict(input=msg_txt)
-        # Clean messages with regex functions
-        rgx_msg = re_slack_id(bot_msg)
-        rgx_msg = re_whitespace(rgx_msg)
-        rgx_msg = re_user_prefixes(rgx_msg)
+        # Clean user message with regex
+        rgx_msg = regex_handler(msg_txt)
+        # Generate bot response
+        bot_msg = THREADS_DICT[thread_id]["chain"].predict(input=rgx_msg)
+        # Clean bot message with regex
+        rgx_msg = regex_handler(bot_msg)
         
         return rgx_msg
     
