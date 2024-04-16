@@ -191,14 +191,14 @@ To run the app on a one-off basis, use the same approach as on a local machine -
 To run the app continuously so that it will remain active upon exiting the terminal, use the `nohup` (no hang-up) command:
 
 ```console
-(venv)[ec2-user@ip-172-XX-XX-161~src]$ nohup python3 app.py
+(venv)[ec2-user@ip-172-XX-XX-161~src]$ nohup python3 app.py 2>&1 &
 nohup: ignoring input and appending output to 'nohup.out'
 
 ```
 
-If the operation is successful, the line `nohup: ignoring input and appending output to 'nohup.out'` will be output, followed by a blank line.
+If the operation is successful, the line `nohup: ignoring input and appending output to 'nohup.out'` will be output, followed by a line that includes a number inside square brackets, like `[2814]`. This is the process ID (PID) for that process. Make a note of the PID if you might need to manage this process individually later - but you can access all processes running `app.py` commands together later as per the instructions in the Termination section.
 
-Close the terminal to leave the app running.
+With the programme running under the `nohup` command, the terminal can be closed and the programme will continue to run.
 
 ### Termination
 
