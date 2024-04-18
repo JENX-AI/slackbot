@@ -22,6 +22,7 @@ LLM bots for integration with Slack.
     - [Run once](#run-once)
     - [Run continuously](#run-continuously)
   - [Termination](#termination)
+- [Slack OAuth Scopes](#slack-oauth-scopes)
 
 ## Models
 
@@ -229,3 +230,15 @@ Note the PID for the relevant process for the model to terminate, then run:
 ```console
 [ec2-user@ip-172-XX-XX-161~slackbot]$ kill <PID>
 ```
+
+## Slack OAuth Scopes
+
+The following bot scopes are required for this implementation:
+
+| OAuth Scope       | Scope Type | Description                                                                   |
+| ----------------- | ---------- | ----------------------------------------------------------------------------- |
+| app_mentions:read | Bot        | View messages that directly mention @app in conversations that the app is in  |
+| chat:write        | Bot        | Send messages as @app                                                         |
+| chat:write:public | Bot        | Send messages to channels @app isn't a member of                              |
+| im:history        | Bot        | View messages and other content in direct messages that app has been added to |
+| connections:write | App        | Route your app’s interactions and event payloads over WebSockets              |
