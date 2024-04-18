@@ -38,10 +38,11 @@ Source: [together.ai](https://docs.together.ai/docs/inference-models)
 
 ## Files
 
-- This app is run from `app.py`.
-- Global variables such as LLM model types and token limits are configured in `src/config.py`.
-- Model-related functions are contained in `src/llm_model.py`.
-- Text-formatting functions are contained in `src/regex.py`.
+- This app is run from `src/app.py`.
+- Global variables such as LLM model types and token limits are configured in `src/utils/config.py`.
+- Model-related functions are contained in `src/utils/model_funcs.py`.
+- Text-formatting functions are contained in `src/utils/regex_funcs.py`.
+- Error logging is handled via `src/utils/logger.py`, with logs stored in `logs/`
 
 ## Development
 
