@@ -2,8 +2,10 @@
 
 LLM bots for integration with Slack.
 
-![](https://img.shields.io/badge/Code-Python-informational?style=flat&logo=python&logoColor=white&color=3776AB)
-![](https://img.shields.io/badge/Tool-Slack-informational?style=flat&logo=slack&logoColor=white&color=4A154B)
+![](https://img.shields.io/badge/Amazon%20AWS-232F3E.svg?style=flat&logo=Amazon-AWS&logoColor=white)
+![](https://img.shields.io/badge/OpenAI-412991.svg?style=flat&logo=OpenAI&logoColor=white)
+![](https://img.shields.io/badge/Python-3776AB.svg?style=flat&logo=Python&logoColor=white)
+![](https://img.shields.io/badge/Slack-4A154B.svg?style=flat&logo=Slack&logoColor=white)
 
 ## Contents
 
@@ -20,6 +22,7 @@ LLM bots for integration with Slack.
     - [Run once](#run-once)
     - [Run continuously](#run-continuously)
   - [Termination](#termination)
+- [Slack OAuth Scopes](#slack-oauth-scopes)
 
 ## Models
 
@@ -95,7 +98,7 @@ Stop the app with `CTRL+C`.
 
 ## Deployment
 
-`slackbot` is deployed on an `AWS EC2` instance named `slackbot-vm-medium-01`.
+`slackbot` is deployed on an `AWS EC2` instance named `slackbot-vm-micro-04`.
 
 The virtual machine (`vm`) uses `Linux` and runs `Python 3.9` as the system python. `uv` is installed system-wide as a `pip` alternative.
 
@@ -107,13 +110,13 @@ Push operations have not been authorised - changes to a repository on `vm` canno
 
 The current structure for hosting four baseline chat models is as follows:
 
-| Parent directory  | Model directory            | Repo directory |
-| ----------------- | -------------------------- | -------------- |
-| `slackbot-repos`/ |                            |                |
-|                   | `alpaca-7b`                | `slackbot`     |
-|                   | `Llama-2-13b-chat-hf`      | `slackbot`     |
-|                   | `Mistral-7B-Instruct-v0.1` | `slackbot`     |
-|                   | `Yi-34B-Chat`              | `slackbot`     |
+| Parent directory | Model directory            | Repo directory |
+| ---------------- | -------------------------- | -------------- |
+| `slackbot-repos` |                            |                |
+|                  | `alpaca-7b`                | `slackbot`     |
+|                  | `Llama-2-13b-chat-hf`      | `slackbot`     |
+|                  | `Mistral-7B-Instruct-v0.1` | `slackbot`     |
+|                  | `Yi-34B-Chat`              | `slackbot`     |
 
 Image models and specialised models will be added when available.
 
@@ -227,3 +230,15 @@ Note the PID for the relevant process for the model to terminate, then run:
 ```console
 [ec2-user@ip-172-XX-XX-161~slackbot]$ kill <PID>
 ```
+
+## Slack OAuth Scopes
+
+The following bot scopes are required for this implementation:
+
+| OAuth Scope       | Scope Type | Description                                                                   |
+| ----------------- | ---------- | ----------------------------------------------------------------------------- |
+| app_mentions:read | Bot        | View messages that directly mention @app in conversations that the app is in  |
+| chat:write        | Bot        | Send messages as @app                                                         |
+| chat:write:public | Bot        | Send messages to channels @app isn't a member of                              |
+| im:history        | Bot        | View messages and other content in direct messages that app has been added to |
+| connections:write | App        | Route your app’s interactions and event payloads over WebSockets              |

@@ -2,10 +2,20 @@
 import re
 
 
+def re_get_mentions(raw_text: str) -> str:
+    """
+    Extracts user and bot mentions from message
+    """
+    pattern = r"<@([A-Z0-9]{9,11})>"
+    # Find all matches
+    matches = re.findall(pattern, raw_text)
+    
+    return matches
+
+
 def re_slack_id(raw_text: str) -> str:
     """
     Removes Slack user ID from start of message (if applicable)
-    Called by regex.regex_handler()
     """
     # Slack user ID format (optional colon and whitespace)
     pattern = r"(<@[A-Z0-9_]{9,11}>)"  
@@ -17,10 +27,19 @@ def re_slack_id(raw_text: str) -> str:
     return raw_text  
 
 
+def re_user_prefixes(raw_text: str) -> str:
+    """
+    Removes prefixes from printed message responses
+    """
+    # Remove "AI:" and "AI Assistant:" prefixes
+    clean_text = re.sub(r"^(AI\:|\s+AI Assistant\:)(.*)", r"\2", raw_text)
+    
+    return clean_text
+
+
 def re_whitespace(raw_text: str) -> str:
     """
     Converts whitespace characters to regular spaces
-    Called by regex.regex_handler()
     """
     # Replace all whitespace with single space
     clean_text = re.sub(r"\s+", " ", raw_text)
@@ -30,21 +49,9 @@ def re_whitespace(raw_text: str) -> str:
     return clean_text
 
 
-def re_user_prefixes(raw_text: str) -> str:
-    """
-    Removes prefixes from printed message responses
-    Called by regex.regex_handler()
-    """
-    # Remove "AI:" and "AI Assistant:" prefixes
-    clean_text = re.sub(r"^(AI\:|\s+AI Assistant\:)(.*)", r"\2", raw_text)
-    
-    return clean_text
-
-
 def regex_handler(raw_text: str) -> str:
     """
     Passes user and bot messages to regex functions
-    Called by llm_model.add_chain_link()
     """
     rgx_msg = re_slack_id(raw_text)
     rgx_msg = re_whitespace(rgx_msg)
