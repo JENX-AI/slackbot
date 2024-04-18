@@ -7,7 +7,7 @@ from slack_bolt.adapter.socket_mode import SocketModeHandler
 from slack import WebClient
 
 # LLM functions and objects
-from utils.llm_model import build_chain, add_chain_link, THREADS_DICT
+from utils.model_funcs import build_chain, add_chain_link, THREADS_DICT
 # Credentials
 load_dotenv()
 SLACK_BOT_TOKEN = os.environ["SLACK_BOT_TOKEN"]
