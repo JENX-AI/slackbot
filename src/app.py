@@ -6,7 +6,7 @@ from slack_bolt import App
 from slack_bolt.adapter.socket_mode import SocketModeHandler
 from slack import WebClient
 
-# LLM functions and objects
+from utils.logger import get_logger
 from utils.model_funcs import build_chain, add_chain_link, THREADS_DICT
 # Credentials
 load_dotenv()
@@ -37,23 +37,27 @@ def message_handler(message: dict, say: slack_bolt.Say, logger: logging.Logger) 
     logger : logging.Logger
         logging object
     """
-    # ID for channel message received from
-    # Set thread timestamp as channel ID 
     try:
-        channel_id = message["thread_ts"]
-    except KeyError:
-        channel_id = message["ts"]
-    
-    # If no chain exists for this channel, create new one
-    if not channel_id in THREADS_DICT:
-        build_chain(channel_id)
-    
-    # Store user_message and get bot response
-    bot_message = add_chain_link(channel_id, message, loc="apps")
-    
-    # Send generated response back in a thread
-    thread_timestamp = message["ts"]
-    say(bot_message, thread_ts = thread_timestamp)
+        # ID for channel message received from
+        # Set thread timestamp as channel ID 
+        try:
+            channel_id = message["thread_ts"]
+        except KeyError:
+            channel_id = message["ts"]
+        
+        # If no chain exists for this channel, create new one
+        if not channel_id in THREADS_DICT:
+            build_chain(channel_id)
+        
+        # Store user_message and get bot response
+        bot_message = add_chain_link(channel_id, message, loc="apps")
+        
+        # Send generated response back in a thread
+        thread_timestamp = message["ts"]
+        say(bot_message, thread_ts = thread_timestamp)
+        
+    except Exception as e:
+        logger.error(f"Error: {e}")
 
 
 @app.event(("app_mention"))
@@ -72,23 +76,27 @@ def handle_app_mention_events(body: dict, say: slack_bolt.Say, logger: logging.L
     logger : logging.Logger
         logging object
     """
-    # ID for channel message received from
-    # Set thread timestamp as channel ID 
     try:
-        channel_id = body["event"]["thread_ts"]
-    except KeyError:
-        channel_id = body["event"]["ts"]
+        # ID for channel message received from
+        # Set thread timestamp as channel ID 
+        try:
+            channel_id = body["event"]["thread_ts"]
+        except KeyError:
+            channel_id = body["event"]["ts"]
+        
+        # If no chain exists for this channel, create new one
+        if not channel_id in THREADS_DICT:
+            build_chain(channel_id)
+        
+        # Store user_message and get bot response
+        bot_message = add_chain_link(channel_id, body, loc="mentions")
     
-    # If no chain exists for this channel, create new one
-    if not channel_id in THREADS_DICT:
-        build_chain(channel_id)
+        # Send generated response back in a thread
+        thread_timestamp = body["event"]["ts"]
+        say(bot_message, thread_ts = thread_timestamp)
     
-    # Store user_message and get bot response
-    bot_message = add_chain_link(channel_id, body, loc="mentions")
-
-    # Send generated response back in a thread
-    thread_timestamp = body["event"]["ts"]
-    say(bot_message, thread_ts = thread_timestamp)
+    except Exception as e:
+        logger.error(f"Error: {e}")
 
 
 # ====================================

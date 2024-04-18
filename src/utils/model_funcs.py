@@ -7,11 +7,12 @@ from utils.config import (
     MODEL, MAX_TOKENS, SYSTEM_PROMPT,
     TEMPERATURE, THREADS_DICT, TOP_P, VERBOSE
 )
+from utils.logger import get_logger
 # Credentials
 load_dotenv()
 TOGETHER_API_KEY = os.environ["TOGETHER_API_KEY"]
 
-logger = logging.getLogger(__name__)
+logger = get_logger(__name__)
 
 # ====================================
 # LLM Model
