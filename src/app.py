@@ -15,7 +15,7 @@ SLACK_APP_TOKEN = os.environ["SLACK_APP_TOKEN"]
 
 app = App(token=SLACK_BOT_TOKEN)
 client = WebClient(SLACK_BOT_TOKEN)
-logger = logging.getLogger(__name__)
+logger = get_logger(__name__)
 
 # ====================================
 # Slack event listeners

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import os, logging
+import os
 import openai
 from dotenv import load_dotenv
 from utils.regex_funcs import regex_handler
