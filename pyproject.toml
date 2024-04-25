@@ -8,7 +8,7 @@ authors = [
     { name = "Elliott Steer", email = "essteer@pm.me" },
 ]
 dependencies = [
-    "aiohttp==3.9.3",
+    "aiohttp==3.9.5",
     "openai==1.17.0",
     "python-dotenv==1.0.1",
     "slack==0.0.2",
