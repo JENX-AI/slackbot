@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 import slack_bolt
 from slack_bolt import App
 from slack_bolt.adapter.socket_mode import SocketModeHandler
-from slack import WebClient
+from slack_sdk import WebClient
 
 from utils.logger import get_logger
 from utils.model_funcs import build_chain, add_chain_link, THREADS_DICT
